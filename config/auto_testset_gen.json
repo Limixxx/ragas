@@ -1,0 +1,14 @@
+{
+    "docs": ["doc/Fine-Tuning_distilBERT_for_Enhanced_Sentiment_Clas.pdf"],
+    "test_size": 10,
+    "output_file": "outputs/testset.json",
+    "knowledge_graph": "outputs/knowledge_graph.json",
+    "generator_llm": {
+        "model_name": "deepseek-chat",
+        "api_base": "https://api.deepseek.com",
+        "api_key": "sk-4ac85c33c2c244328deb7a142b4b50f0"
+    },
+    "embeddings": {
+        "model_name_or_path": "model/bge-small-zh-v1.5"
+    }
+}
