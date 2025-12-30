@@ -1,17 +1,18 @@
-# 自定义类
-from arguments import TestsetGenerationArguments
-from doc.documents import load_data, data_transforms, get_knowledge_graph, get_persona, get_answers, get_queries
+from arguments import TestsetGenerationArguments, EvaluationArguments
 from model.GenerateModel import GenerateModel
 from model.EmbeddingModel import EmbeddingModel
 
-from ragas.embeddings import LangchainEmbeddingsWrapper
-from ragas.llms import LangchainLLMWrapper
-from ragas import RunConfig
-from ragas.testset import TestsetGenerator
-
 import os
 
+from ragas import RunConfig
+from ragas.llms import LangchainLLMWrapper
+
 def auto_testset_gen(args: TestsetGenerationArguments):
+    from doc.documents import load_data, data_transforms, get_knowledge_graph, get_persona, get_answers, get_queries
+
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+    from ragas.testset import TestsetGenerator
+
     docs = load_data(args.docs)
     generator = GenerateModel.load(**args.generator_llm)
     embedding = EmbeddingModel.load(**args.embeddings)
@@ -58,7 +59,48 @@ def auto_testset_gen(args: TestsetGenerationArguments):
     )
     print("auto_testset_gen OK")
 
+def auto_eval(args: EvaluationArguments):
+    from model.PromptTranslater import translate_prompts
+    from utils.utils import dynamic_import
+
+    from ragas import evaluate
+
+    from datasets import Dataset
+    import asyncio
+
+    dataset = Dataset.from_json(args.testset_file)
+    critic = GenerateModel.load(**args.critic_llm)
+    embedding = EmbeddingModel.load(**args.embeddings)
+    metrics = dynamic_import('ragas.metrics', args.metrics)
+
+    asyncio.run(
+        translate_prompts(
+            prompts=metrics,
+            target_lang=args.language,
+            llm=LangchainLLMWrapper(critic),
+            adapt_instruction=True,
+        )
+    )
+    run_config = RunConfig(timeout=600, max_retries=2, max_wait=60, max_workers=1)
+    score = evaluate(
+        dataset,
+        metrics=metrics,
+        llm=critic,
+        embeddings=embedding,
+        run_config=run_config,
+    )
+    score_df = score.to_pandas()
+    print(score_df)
+
+    output_path = args.testset_file.replace('.json', '_score.json')
+    score_df.to_json(output_path, indent=4, index=False, orient='records', force_ascii=False)
+
+    print(f'Eval score saved to {output_path}')
+
+
+
 if __name__ == "__main__":
+    """
     testset_generation = {
         #"docs": ["doc/中文文本相似性分析：Sentence-BERT应用指南.docx"],
         #"language": "chinese",
@@ -83,3 +125,27 @@ if __name__ == "__main__":
     args = TestsetGenerationArguments(**testset_generation)
     # 自动生成测试案例
     auto_testset_gen(args)
+    """
+
+    evaluation = {
+        "testset_file": "outputs/testset_with_answer.json",
+        "critic_llm": {
+            "api_base": "https://ark.cn-beijing.volces.com/api/v3",
+            "api_key": "4f9ca511-527b-4b13-a068-2bd4834f85ad",
+            "model_name": "doubao-seed-1-6-251015",
+        },
+        "embeddings": {
+            "model_name_or_path": ".venv/bge-small-zh-v1.5",
+        },
+        "metrics": [
+            "Faithfulness",
+            "AnswerRelevancy",
+            "ContextPrecision",
+            "AnswerCorrectness",
+        ],
+        "language": "english",
+    }
+    from arguments import EvaluationArguments
+    args = EvaluationArguments(**evaluation)
+    # 自动评测
+    auto_eval(args)

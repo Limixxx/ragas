@@ -1,9 +1,4 @@
 from inspect import signature
-from typing import Optional
-
-import colorlog
-import logging
-import os
 
 def get_supported_params(func):
     """Get the supported parameters of a function."""
@@ -11,7 +6,6 @@ def get_supported_params(func):
     return set(sig.parameters.keys())
 
 import colorlog
-import importlib.util as iutil
 import logging
 import os
 from logging import Logger
@@ -198,3 +192,12 @@ def warn_once(logger: Logger, message: str) -> None:
 
 
 _warned: List[str] = []
+
+import importlib
+
+def dynamic_import(module_name, function_names):
+    functions = []
+    for name in function_names:
+        module = importlib.import_module(module_name)
+        functions.append(getattr(module, name)())
+    return functions
