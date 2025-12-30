@@ -60,19 +60,24 @@ def auto_testset_gen(args: TestsetGenerationArguments):
 
 if __name__ == "__main__":
     testset_generation = {
-        "docs": ["doc/中文文本相似性分析：Sentence-BERT应用指南.docx"],
+        #"docs": ["doc/中文文本相似性分析：Sentence-BERT应用指南.docx"],
+        #"language": "chinese",
+        "docs": ["doc/Fine-Tuning_distilBERT_for_Enhanced_Sentiment_Clas.pdf"],
+        "language": "english",
         "test_size": 10,
         "output_file": "outputs/testset.json",
         "knowledge_graph": "outputs/knowledge_graph.json",
         "generator_llm": {
-            "model_name": "deepseek-chat",
-            "api_base": "https://api.deepseek.com",
-            "api_key": "sk-4ac85c33c2c244328deb7a142b4b50f0",
+            #"api_base": "https://api.deepseek.com",
+            #"api_key": "sk-53840dc61fc7483697e92c489c35d117",
+            #"model_name": "deepseek-chat",
+            "api_base": "https://ark.cn-beijing.volces.com/api/v3",
+            "api_key": "4f9ca511-527b-4b13-a068-2bd4834f85ad",
+            "model_name": "doubao-seed-1-6-251015",
         },
         "embeddings": {
             "model_name_or_path": ".venv/bge-small-zh-v1.5",
         },
-        "language": "chinese",
     }
     from arguments import TestsetGenerationArguments
     args = TestsetGenerationArguments(**testset_generation)

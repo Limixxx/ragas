@@ -1,8 +1,8 @@
 import asyncio
 import os
 import typing
-import tqdm
 import pandas as pd
+from tqdm import tqdm
 
 from ragas.embeddings import BaseRagasEmbedding
 from ragas.llms import BaseRagasLLM
@@ -22,7 +22,7 @@ from model.PromptTranslater import translate_prompts
 
 def load_data(file_path):
     datas = []
-    for path in tqdm.tqdm(file_path):
+    for path in tqdm(file_path):
         if path.endswith('.pdf'):
             from langchain_community.document_loaders import PyPDFLoader
             loader = PyPDFLoader(path)
@@ -213,7 +213,7 @@ def get_queries(llm: BaseRagasLLM, kg: KnowledgeGraph, language: str):
 
     return [(query, 1 / len(available_queries)) for query in available_queries]
 
-def get_answers(testset_df, generator_llm, language: None):
+def get_answers(testset_df, generator_llm, language: str):
     template = """You are an assistant for question-answering tasks.
     Use the following pieces of retrieved context to answer the question.
     If you don't know the answer, just say that you don't know. Answer in {language}.

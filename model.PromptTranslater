@@ -1,9 +1,0 @@
-2025-12-26 09:47:52 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\HeadlinesExtractor
-2025-12-26 09:47:52 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\SummaryExtractor
-2025-12-26 09:47:52 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\ThemesExtractor
-2025-12-26 09:47:52 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\NERExtractor
-2025-12-26 09:47:52 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\CustomNodeFilter
-2025-12-26 09:47:52 - evalscope - INFO: Translate prompts finished
-2025-12-26 09:47:57 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\MultiHopAbstractQuerySynthesizer
-2025-12-26 09:47:57 - evalscope - INFO: Load existing prompts from D:\Work Space\github\ragas\prompts\chinese\MultiHopSpecificQuerySynthesizer
-2025-12-26 09:47:57 - evalscope - INFO: Translate prompts finished
